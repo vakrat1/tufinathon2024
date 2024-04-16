@@ -45,7 +45,7 @@ def run_chaty(prompt, context, rest_gpt):
         logger.info("Ask me any API question and I will solve all your problems!")
         return "Ask me any API question and I will solve all your problems!"
 
-    full_query = f"Previous conversations {context} User question: {prompt}" if context else prompt
+    full_query = f"Previous conversations: {context} User question: {prompt}" if context else prompt
     logger.info(f"Query: {full_query}")
 
     answer = rest_gpt.run(full_query)

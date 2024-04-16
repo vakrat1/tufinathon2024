@@ -56,23 +56,6 @@ Plan step 1: Get all the active workflows from securechange
 API response: Successfully called GET /securechangeworkflow/api/securechange/workflows/active_workflows.json to get all the active workflow
 Thought: I am finished executing a plan and have the data the used asked to retrieve
 Final Answer: I have returned the list of all active workflows in securechange
-
-Example 7:
-User query: Create ticket for source IP address 172.16.100.0/30 to destination IP address 10.200.0.0/24 on tpc 8081 service on workflow AR on device FMG
-Plan step 1: If workflow name, source, destination or service is missing request answer that the data is missing, if subject is missing generate subject named demo ticket, if you have everything you need open a ticket on secure change
-API response: Successfully called POST /securechangeworkflow/api/securechange/tickets.json to open a ticket in securechange
-Thought: I am finished executing a plan and have the data the used asked to create
-Final Answer: I have returned response status code with 201 Created ticket successfully
-
-Example 8:
-User query: For traffic between src IP address 172.16.100.0/30 to destination IP address 10.200.0.0/24 on ANY service, check if the traffic is blocked. If it is blocked take from the device info the id, name, type and vendor of this topology path and create an AccessRequest (AR) ticket with subject AR_TEST with workflow id 10 and workflow name AR with priority Normal. Take the target device from the device_info including its name and its management name. Use the source from the path calculation. Take the destination fopm the path calculation as well. Take also the service details from the path calculation parameters. Action Accept
-Plan step 1: For traffic between src IP address 172.16.100.0/30 to destination IP address 10.200.0.0/24 on ANY service, check if the traffic is blocked
-API response: Successfully called GET /securetrack/api/topology/path.json?src={source}&dst={destination}&service={service} to check if a traffic between src ip  172.16.100.0/30 to destination IP 10.200.0.0/24 on a service any is blocked
-Plan step 2: Continue. Take the device_info from the response of step 1. device_info contains the information about the devices on the path. For each such device retrive the devices id, type, name, vendor. Take also the source ip, destination ip and the service to open a ticket on secure change
-API response: Successfully called POST /securechangeworkflow/api/securechange/tickets.json to open a ticket in securechange
-Thought: I am finished executing a plan and have the data the used asked to create
-Final Answer: I have returned response status code with 201 Created ticket successfully
-
 """
 }
 

@@ -1,0 +1,12 @@
+openai_api_key: "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"
+
+tmdb_access_token: "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlYzI0ZjZkMjY1YjE2ZTQxNmJjNzc5YTdlMjMwZWFhNCIsInN1YiI6IjY2MGM2MzI1YzhhNWFjMDE0OTc3YjQzOSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.xRIt-nuD8TbL9Q-JAX-gF9HTyhwEMqs6oN9RQ5Hs1vs"
+
+spotipy_client_id: "fba1c856b5af42fd8d0007e20485f29c"
+spotipy_client_secret: "b8d2587ae27a4072be5fe8edfdd090a1"
+
+spotipy_redirect_uri: "http://radioblbla.co"
+
+tufin_basic_auth: "YWFhYTphYWFh"#User aaaa:aaaa
+#tufic_sc_bearer_auth: "YWFhYTphYWFh"
+#tufin_basic_auth: "YWRtaW46enVidXIx" #zubur1

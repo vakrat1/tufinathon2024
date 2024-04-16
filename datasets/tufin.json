@@ -1,0 +1,123 @@
+[
+  {
+    "query": "Give me the path between the given source address 10.10.10.1/24 to a destination address 3.3.3.3/30 on any given service ",
+    "solution": [
+      "GET /securetrack/api/topology/path.json?src={source_ip}&dst={destination_ip}&service={service}"
+    ]
+  },
+  {
+    "query": "Give me the path between the given source IP address 10.10.10.1/16 to a destination IP address 3.3.3.3/24 for the Facebook service which on tcp:44",
+    "solution": [
+      "GET /securetrack/api/topology/path.json?src=?src={source_ip}&dst={destination_ip}0&service={application}"
+    ]
+  },
+  {
+    "query": "Give me the path between the given source Network-Objectc with ID 422 to destination NetworkObject with ID 483 for any given service",
+    "solution": [
+      "GET /securetrack/api/topology/path.json?src={network_object}&dst={network_object}&service=any"
+    ]
+  },
+  {
+    "query": "Give me the list of all devices monitored by Tufin's Securetrack",
+    "solution": [
+      "GET /securetrack/api/devices.json"
+    ]
+  },
+  {
+    "query": "Give me the  list of the management devices",
+    "solution": [
+      "GET /securetrack/api/devices.json"
+    ]
+  },
+  {
+    "query": "Give me the list of all VMWare vendor devices monitored by Tufin's Securetrack",
+    "solution": [
+      "GET /securetrack/api/devices.json?vendor={vendor_name}"
+    ]
+  },
+  {
+    "query": "Give me the list of all the devices monitored by Tufin's Securetrack sorted ascending by their IP addresses",
+    "solution": [
+      "GET /securetrack/api/devices.json.json?sort={ip}:{sort}"
+    ]
+  },
+  {
+    "query": "Give me the list of all the devices monitored by Tufin's Securetrack and also show their OS version",
+    "solution": [
+      "GET /securetrack/api/devices.json?show_os_version=true"
+    ]
+  },
+  {
+    "query": "Give me the list of all the devices monitored by Tufin's Securetrack where their status is started",
+    "solution": [
+      "GET /securetrack/api/devices.json?status=started"
+    ]
+  },
+  {
+    "query": "Give me the device that is monitored by Tufin's Securetrack where its id is 60",
+    "solution": [
+      "GET  /securetrack/api/devices/60.json"
+    ]
+  },
+  {
+    "query": "Give me the  device that is monitored by Tufin's Securetrack where its id is 20 and show me its os version",
+    "solution": [
+      "GET /securetrack/api/devices/20.json?show_os_version=true"
+    ]
+  },
+  {
+    "query": "Give me the  device that is monitored by Tufin's Securetrack where its id is 20 and show me its license",
+    "solution": [
+      "GET /securetrack/api/devices/20.json?show_license=true"
+    ]
+  },
+  {
+    "query": "Give me the  list of waiting provisioning tasks for a management device id 1",
+    "solution": [
+      "GET /securetrack/api/devices/provisioning/waiting_tasks/1.json"
+    ]
+  },
+  {
+    "query": "Give me the  list of waiting provisioning tasks for a management device id 4",
+    "solution": [
+      "GET /securetrack/api/devices/provisioning/waiting_tasks/4.json"
+    ]
+  },
+  {
+    "query": "Give me the  revisions of a device with device id 4",
+    "solution": [
+      "GET /securetrack/api/devices/4/revisions.json"
+    ]
+  },
+  {
+    "query": "Give me list of active workflow in securechange",
+    "solution": [
+      "GET /securechangeworkflow/api/securechange/workflows/active_workflows.json"
+    ]
+  },
+  {
+    "query": "Give me list of active workflow in securechange from type of CCESS_REQUEST",
+    "solution": [
+      "GET /securechangeworkflow/api/securechange/workflows/active_workflows.json?type=ACCESS_REQUEST"
+    ]
+  },
+  {
+    "query": "Create ticket in securechange",
+    "solution": [
+      "POST /securechangeworkflow/api/securechange/tickets.json"
+    ]
+  },
+  {
+    "query": "Create AccessRequest (AR) ticket with subject OMERTEST with workflow id 10 and name AR with target device management FMG/SD-WAN and device name FortiGate_7_0_112_244-SD-WAN with Source address of IP 10.251.4.0/23 and Destination address of IP 10.252.0.0/22 on service TCP:80 and Action Accept",
+    "solution": [
+      "POST /securechangeworkflow/api/securechange/tickets.json"
+    ]
+  },
+  {
+    "query": "Give me the path between the given source address 10.10.10.1/24 to a destination address 3.3.3.3/30 on any given service, and create an AccessRequest (AR) ticket with target device management FMG/SD-WAN and name FortiGate_7_0_112_244-SD-WAN with Source address 10.10.10.1/24 and Destination address 3.3.3.3/30 on service ANY and Action Allow",
+    "solution": [
+      "GET /securetrack/api/topology/path.json?src={source_ip}&dst={destination_ip}&service={service}",
+      "POST /securechangeworkflow/api/securechange/tickets.json"
+    ]
+  }
+]

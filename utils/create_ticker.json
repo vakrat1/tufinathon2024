@@ -1,0 +1,78 @@
+{
+  "ticket": {
+    "subject": "YanivTicket2",
+    "requester": "aaaa",
+    "requester_id": 5,
+    "priority": "Normal",
+    "domain_name": "",
+    "workflow": {
+      "id": 7,
+      "name": "AR",
+      "uses_topology": true
+    },
+    "steps": {
+      "step": [
+        {
+          "name": "Open request",
+          "tasks": {
+            "task": {
+              "fields": {
+                "field": {
+                  "@xsi.type": "multi_access_request",
+                  "name": "ar",
+                  "access_request": {
+                    "use_topology": true,
+                    "targets": {
+                      "target": {
+                        "@type": "Object",
+                        "object_name": "FortiGate_7_0_112_244-SD-WAN",
+                        "management_name": "FMG/SD-WAN"
+                      }
+                    },
+                    "users": {
+                      "user": [
+                        "Any"
+                      ]
+                    },
+                    "sources": {
+                      "source": [
+                        {
+                          "@type": "IP",
+                          "ip_address": "172.16.100.0",
+                          "netmask": "255.255.255.252",
+                          "cidr": 30
+                        }
+                      ]
+                    },
+                    "destinations": {
+                      "destination": [
+                        {
+                          "@type": "IP",
+                          "ip_address": "10.200.0.0",
+                          "netmask": "255.255.255.0",
+                          "cidr": 24
+                        }
+                      ]
+                    },
+                    "services": {
+                      "service": [
+                        {
+                          "@type": "PROTOCOL",
+                          "protocol": "TCP",
+                          "port": 22
+                        }
+                      ]
+                    },
+                    "action": "Accept",
+                    "labels": ""
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "comments": ""
+  }
+}

@@ -1,0 +1,1425 @@
+{
+  "openapi": "3.0.0",
+  "servers": [
+    {
+      "url": "https://192.168.32.84"
+    }
+  ],
+  "info": {
+    "title": "SecureTrack Devices API",
+    "description": "API for managing devices in SecureTrack",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/securetrack/api/devices/{id}.json": {
+      "get": {
+        "summary": "Get specific device",
+        "description": "Returns details about a specific device.",
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Device ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "context",
+            "in": "query",
+            "description": "Global MSSP context",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "show_os_version",
+            "in": "query",
+            "description": "Show OS version as a part of the response",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "show_license",
+            "in": "query",
+            "description": "Show license information",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Device details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/securetrack/api/devices.json": {
+      "get": {
+        "summary": "Get devices",
+        "description": "Returns a list of devices with optional filters and sorting.",
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "context",
+            "in": "query",
+            "description": "Global MSSP context",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Device name",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ip",
+            "in": "query",
+            "description": "Device IP address",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "vendor",
+            "in": "query",
+            "description": "Device vendor",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "model",
+            "in": "query",
+            "description": "Device model",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort ascending or descending (asc or desc)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "description": "Starting page for query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "Number of pages for query starting from starting page",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "show_os_version",
+            "in": "query",
+            "description": "Show OS version as a part of the response",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "show_license",
+            "in": "query",
+            "description": "Show license information for each device",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Device status",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Device list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeviceList"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/securetrack/api/devices/provisioning/waiting_tasks/{device_id}.json": {
+      "get": {
+        "summary": "Get list of waiting tasks for specific management device",
+        "description": "Returns a list of waiting tasks in queue for a specific management device.",
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "device_id",
+            "in": "path",
+            "description": "Device ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of waiting tasks retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WaitingTasksList"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "User not permitted to view resource"
+          },
+          "404": {
+            "description": "No entity found for query"
+          },
+          "400": {
+            "description": "Device with given ID is not a management ID"
+          }
+        }
+      }
+    },
+    "/securetrack/api/devices/{id}/revisions.json": {
+      "get": {
+        "summary": "Get revisions by device",
+        "description": "Fetches revisions for a given device.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Device ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "context",
+            "in": "query",
+            "description": "Global MSSP context",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "description": "Starting page for query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "Number of pages for query starting from starting page",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Revisions retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RevisionListDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/securetrack/api/topology/path.json": {
+      "get": {
+        "summary": "Get path for specified traffic",
+        "description": "Returns one or more paths for the specified traffic.",
+        "parameters": [
+          {
+            "name": "context",
+            "in": "query",
+            "description": "Global MSSP context",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "src",
+            "in": "query",
+            "description": "Source address/addresses",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dst",
+            "in": "query",
+            "description": "Destination address/addresses",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "service",
+            "in": "query",
+            "description": "Service/services",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sourceDomainIdTag",
+            "in": "query",
+            "description": "Path starting point Domain Id",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "includeIncompletePaths",
+            "in": "query",
+            "description": "Include incomplete paths",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "simulateNat",
+            "in": "query",
+            "description": "Simulate NAT",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "lastInstall",
+            "in": "query",
+            "description": "Last Installed",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of paths for the specified traffic",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaResults"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/securechangeworkflow/api/securechange/tickets.json": {
+      "post": {
+        "summary": "Create a new SecureChange ticket",
+        "description": "Creates a new ticket with the specified details in SecureChange system.",
+        "operationId": "createTicket",
+        "security": [
+          {
+            "basicAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Data for creating a new ticket",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TicketRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Ticket created successfully"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/securechangeworkflow/api/securechange/workflows/active_workflows.json": {
+      "get": {
+        "summary": "List active workflows",
+        "description": "Retrieves a list of the active workflows in SecureChange, optionally filtered by workflow type.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Type of the workflow to filter by.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "GENERIC",
+                "ACCESS_REQUEST_AND_MODIFY_GROUP",
+                "ACCESS_REQUEST",
+                "MODIFY_GROUP",
+                "DECOMMISSION_NETWORK_OBJECT",
+                "RULE_DECOMMISSION",
+                "RULE_RECERTIFICATION",
+                "CLONE_NETWORK_OBJECT_POLICY",
+                "RULE_MODIFICATION"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of active workflows.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BasicWorkflowInfoListDTO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access is denied."
+          },
+          "400": {
+            "description": "The specified type is not a valid workflow type."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "basicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      },
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "DeviceDetails": {
+        "type": "object",
+        "properties": {
+          "OS_Version": {
+            "type": "string"
+          },
+          "parent_id": {
+            "type": "integer"
+          },
+          "latest_revision": {
+            "type": "string"
+          },
+          "virtual_type": {
+            "type": "string"
+          },
+          "ip": {
+            "type": "string"
+          },
+          "context_name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "module_type": {
+            "type": "string"
+          },
+          "installed_policy": {
+            "type": "string"
+          },
+          "licenses": {
+            "type": "object",
+            "properties": {
+              "license": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "expiration": {
+                      "type": "string"
+                    },
+                    "used": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "sku": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "model": {
+            "type": "string"
+          },
+          "vendor": {
+            "type": "string"
+          },
+          "domain_id": {
+            "type": "string"
+          },
+          "offline": {
+            "type": "boolean"
+          },
+          "module_uid": {
+            "type": "string"
+          },
+          "domain_name": {
+            "type": "string"
+          },
+          "topology": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "DeviceList": {
+        "type": "object",
+        "properties": {
+          "device": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeviceDetails"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "WaitingTasksList": {
+        "type": "object",
+        "properties": {
+          "task": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Task"
+            }
+          }
+        }
+      },
+      "Task": {
+        "type": "object",
+        "properties": {
+          "ticketId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status": {
+            "type": "string"
+          },
+          "taskId": {
+            "type": "string"
+          },
+          "insertionTimestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "RevisionListDTO": {
+        "type": "object",
+        "properties": {
+          "revisions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RevisionDTO"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Number of total available elements"
+          },
+          "count": {
+            "type": "integer",
+            "description": "Number of returned elements"
+          }
+        }
+      },
+      "RevisionDTO": {
+        "type": "object",
+        "properties": {
+          "time": {
+            "type": "string",
+            "description": "The time of the revision"
+          },
+          "date": {
+            "type": "string",
+            "description": "The date of the revision"
+          },
+          "comment": {
+            "$ref": "#/components/schemas/RevisionCommentDTO",
+            "description": "The revision comment"
+          },
+          "action": {
+            "type": "string",
+            "description": "The action upon this revision was retrieved"
+          },
+          "tickets": {
+            "type": "object",
+            "properties": {
+              "wrapper": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TicketDTO"
+                }
+              }
+            },
+            "description": "The tickets of the revision"
+          },
+          "revisionId": {
+            "type": "string",
+            "description": "The order of the revision in the device"
+          },
+          "modules_and_policy": {
+            "$ref": "#/components/schemas/Map_String_String",
+            "description": "The modules and policy names of the revision"
+          },
+          "admin": {
+            "type": "string",
+            "description": "The administrator user which caused this revision"
+          },
+          "guiClient": {
+            "type": "string",
+            "description": "The GUI client for revision"
+          },
+          "auditLog": {
+            "type": "string",
+            "description": "The audit log of the revision"
+          },
+          "policyPackage": {
+            "type": "string",
+            "description": "The policy package of the revision"
+          },
+          "firewall_status": {
+            "type": "boolean",
+            "description": "The firewall status of the revision"
+          },
+          "ready": {
+            "type": "boolean",
+            "description": "The status of the revision"
+          },
+          "authorizationStatus": {
+            "type": "string",
+            "description": "The authorization status of the changes in the revision"
+          },
+          "id": {
+            "type": "string",
+            "description": "The globally unique ID of the revision"
+          }
+        }
+      },
+      "RevisionCommentDTO": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "description": "Date of revision comment"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Revision comment"
+          },
+          "editor": {
+            "type": "string",
+            "description": "Editor of revision comment"
+          }
+        }
+      },
+      "TicketDTO": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "description": "The source of the ticket"
+          },
+          "id": {
+            "type": "string",
+            "description": "The id of the ticket"
+          }
+        }
+      },
+      "Map_String_String": {
+        "type": "object",
+        "properties": {
+          "entry": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Entry_String_String"
+            }
+          }
+        }
+      },
+      "Entry_String_String": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "PaResults": {
+        "type": "object",
+        "properties": {
+          "device_info": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaDeviceJson"
+            }
+          },
+          "traffic_allowed": {
+            "type": "boolean"
+          },
+          "unrouted_elements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UnRoutedElements"
+            }
+          }
+        }
+      },
+      "PaDeviceJson": {
+        "type": "object",
+        "properties": {
+          "bindings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BindingJson"
+            }
+          },
+          "vendor": {
+            "type": "string"
+          },
+          "nextDevices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NextDeviceJson"
+            }
+          },
+          "ipsecList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IpsecJson"
+            }
+          },
+          "natList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NatJson"
+            }
+          },
+          "incomingInterfaces": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InterfaceJson"
+            }
+          },
+          "pbrEntryList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PbrEntryJson"
+            }
+          },
+          "sdwanEntryJsonList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SdwanEntryJson"
+            }
+          },
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "BindingJson": {
+        "type": "object",
+        "properties": {
+          "rules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RuleJson"
+            }
+          },
+          "enforcedOn": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "error": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "RuleJson": {
+        "type": "object",
+        "properties": {
+          "services": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "action": {
+            "type": "string"
+          },
+          "users": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sourceNegated": {
+            "type": "boolean"
+          },
+          "serviceNegated": {
+            "type": "boolean"
+          },
+          "urlCategories": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ruleUid": {
+            "type": "string"
+          },
+          "ruleIdentifier": {
+            "type": "string"
+          },
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "destinations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "applications": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "aclName": {
+            "type": "string"
+          },
+          "serviceGraphName": {
+            "type": "string"
+          },
+          "tenantName": {
+            "type": "string"
+          },
+          "subjectName": {
+            "type": "string"
+          },
+          "ruleScope": {
+            "type": "string"
+          },
+          "ruleDirection": {
+            "type": "string"
+          },
+          "rulePriority": {
+            "type": "string"
+          },
+          "contractName": {
+            "type": "string"
+          },
+          "destNegated": {
+            "type": "boolean"
+          },
+          "name": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "NextDeviceJson": {
+        "type": "object",
+        "properties": {
+          "routes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RouteJson"
+            }
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "RouteJson": {
+        "type": "object",
+        "properties": {
+          "routeDestination": {
+            "type": "string"
+          },
+          "nextHopIp": {
+            "type": "string"
+          },
+          "outgoingInterfaceName": {
+            "type": "string"
+          },
+          "outgoingVrf": {
+            "type": "string"
+          },
+          "mplsInputLabel": {
+            "type": "string"
+          },
+          "mplsOutputLabel": {
+            "type": "string"
+          },
+          "evpnInputLabel": {
+            "type": "string"
+          },
+          "evpnOutputLabel": {
+            "type": "string"
+          },
+          "evpnType": {
+            "type": "string"
+          }
+        }
+      },
+      "IpsecJson": {
+        "type": "object",
+        "properties": {
+          "acl": {
+            "type": "string"
+          },
+          "sourceIp": {
+            "type": "string"
+          },
+          "outgoingInterface": {
+            "$ref": "#/components/schemas/InterfaceJson"
+          },
+          "seqNumber": {
+            "type": "integer"
+          },
+          "participatingGateways": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "satelliteGateways": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "peer": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/IpsecType"
+          }
+        }
+      },
+      "InterfaceJson": {
+        "type": "object",
+        "properties": {
+          "subnet": {
+            "type": "string"
+          },
+          "ip": {
+            "type": "string"
+          },
+          "vpnConnection": {
+            "type": "string"
+          },
+          "incomingVrf": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "NatJson": {
+        "type": "object",
+        "properties": {
+          "objectNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "translatedServices": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "originalServices": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "policyRuleNumber": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "originalIps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "translatedIps": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "type": {
+            "$ref": "#/components/schemas/Type"
+          }
+        }
+      },
+      "PbrEntryJson": {
+        "type": "object",
+        "properties": {
+          "interfaceName": {
+            "type": "string"
+          },
+          "seqNumber": {
+            "type": "integer"
+          },
+          "aclName": {
+            "type": "string"
+          },
+          "routeMapName": {
+            "type": "string"
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PbrActionJson"
+            }
+          }
+        }
+      },
+      "PbrActionJson": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "SdwanEntryJson": {
+        "type": "object",
+        "properties": {
+          "ruleName": {
+            "type": "string"
+          },
+          "seqNumber": {
+            "type": "integer"
+          },
+          "policyName": {
+            "type": "string"
+          },
+          "members": {
+            "type": "string"
+          }
+        }
+      },
+      "UnRoutedElements": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "destination": {
+            "type": "string"
+          }
+        }
+      },
+      "IpsecType": {
+        "type": "string",
+        "enum": ["Type1", "Type2"]
+      },
+      "Type": {
+        "type": "string",
+        "enum": ["TypeA", "TypeB"]
+      },
+      "TicketRequest": {
+        "type": "object",
+        "properties": {
+          "ticket": {
+            "type": "object",
+            "properties": {
+              "subject": {
+                "type": "string"
+              },
+              "requester": {
+                "type": "string"
+              },
+              "requester_id": {
+                "type": "integer"
+              },
+              "priority": {
+                "type": "string"
+              },
+              "domain_name": {
+                "type": "string"
+              },
+              "workflow": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "uses_topology": {
+                    "type": "boolean"
+                  }
+                }
+              },
+              "steps": {
+                "type": "object",
+                "properties": {
+                  "step": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "tasks": {
+                          "type": "object",
+                          "properties": {
+                            "task": {
+                              "type": "object",
+                              "properties": {
+                                "fields": {
+                                  "type": "object",
+                                  "properties": {
+                                    "field": {
+                                      "type": "object",
+                                      "properties": {
+                                        "@xsi.type": {
+                                          "type": "string"
+                                        },
+                                        "name": {
+                                          "type": "string"
+                                        },
+                                        "access_request": {
+                                          "type": "object",
+                                          "properties": {
+                                            "use_topology": {
+                                              "type": "boolean"
+                                            },
+                                            "targets": {
+                                              "type": "object",
+                                              "properties": {
+                                                "target": {
+                                                  "type": "object",
+                                                  "properties": {
+                                                    "@type": {
+                                                      "type": "string"
+                                                    },
+                                                    "object_name": {
+                                                      "type": "string"
+                                                    },
+                                                    "management_name": {
+                                                      "type": "string"
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            },
+                                            "users": {
+                                              "type": "array",
+                                              "items": {
+                                                "type": "string"
+                                              }
+                                            },
+                                            "sources": {
+                                              "type": "object",
+                                              "properties": {
+                                                "source": {
+                                                  "type": "array",
+                                                  "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "@type": {
+                                                        "type": "string"
+                                                      },
+                                                      "ip_address": {
+                                                        "type": "string"
+                                                      },
+                                                      "netmask": {
+                                                        "type": "string"
+                                                      },
+                                                      "cidr": {
+                                                        "type": "integer"
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            },
+                                            "destinations": {
+                                              "type": "object",
+                                              "properties": {
+                                                "destination": {
+                                                  "type": "array",
+                                                  "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                      "@type": {
+                                                        "type": "string"
+                                                      },
+                                                      "ip_address": {
+                                                        "type": "string"
+                                                      },
+                                                      "netmask": {
+                                                        "type": "string"
+                                                      },
+                                                      "cidr": {
+                                                        "type": "integer"
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            },
+                                            "services": {
+                                              "type": "array",
+                                              "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                  "@type": {
+                                                    "type": "string"
+                                                  },
+                                                  "protocol": {
+                                                    "type": "string"
+                                                  },
+                                                  "port": {
+                                                    "type": "integer"
+                                                  }
+                                                }
+                                              }
+                                            },
+                                            "action": {
+                                              "type": "string"
+                                            },
+                                            "labels": {
+                                              "type": "string"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "comments": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "BasicWorkflowInfoDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The ID of the workflow."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the workflow."
+          },
+          "description": {
+            "type": "string",
+            "description": "A brief description of the workflow."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "GENERIC",
+              "ACCESS_REQUEST_AND_MODIFY_GROUP",
+              "ACCESS_REQUEST",
+              "MODIFY_GROUP",
+              "DECOMMISSION_NETWORK_OBJECT",
+              "RULE_DECOMMISSION",
+              "RULE_RECERTIFICATION",
+              "CLONE_NETWORK_OBJECT_POLICY",
+              "RULE_MODIFICATION"
+            ]
+          }
+        }
+      },
+      "BasicWorkflowInfoListDTO": {
+        "type": "object",
+        "properties": {
+          "workflows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BasicWorkflowInfoDTO"
+            }
+          }
+        }
+      }
+    }
+  }
+}

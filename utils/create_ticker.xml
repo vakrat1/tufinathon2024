@@ -1,0 +1,125 @@
+<ticket>
+    <subject>YanivTicket4</subject>
+    <requester>u1</requester>
+    <priority>Normal</priority>
+    <domain_name>Default</domain_name>
+    <workflow>
+         <id>7</id>
+         <name>AR</name>
+    </workflow>
+    <steps>
+         <step>
+             <name>Open request</name>
+             <tasks>
+                 <task>
+                     <fields>
+                         <field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="multi_access_request">
+                             <name>Required Access</name>
+                             <access_request>
+                                 <use_topology>true</use_topology>
+                                 <targets>
+                                     <target type="Object">
+                                         <object_name>ASA</object_name>
+                                         <management_name>ASA</management_name>
+                                     </target>
+                                 </targets>
+                                 <users>
+                                     <user>Any</user>
+                                 </users>
+                                 <sources>
+                                     <source type="Object">
+                                         <object_name>host_10.100.10.140</object_name>
+                                         <management_name>NetScreen</management_name>
+                                     </source>
+                                 <sources>
+                                     <source type="Object">
+                                         <object_UID>{55908141-c341-4990-9cc6-a3fd2dfb49e1}</object_UID>
+                                         <management_id>13</management_id>
+                                     </source>
+                                 </sources>
+                                 <destinations>
+                                     <destination type="Object">
+                                         <object_name>h_10.10.10.10</object_name>
+                                         <management_name>ASA</management_name>
+                                     </destination>
+                                 </destinations>
+                                 <services>
+                                     <service type="PROTOCOL">
+                                         <protocol>TCP</protocol>
+                                         <port>80</port>
+                                     </service>
+                                     <service type="APPLICATION_IDENTITY">
+                                         <application_name>Gmail</application_name>
+                                     </service>
+                                 </services>
+                                 <action>Accept</action>
+                                 <labels/>
+                             </access_request>
+                             <access_request>
+                                 <use_topology>false</use_topology>
+                                 <targets>
+                                     <target type="Object">
+                                         <object_name>inside_access_in</object_name>
+                                         <management_name>ASA</management_name>
+                                     </target>
+                                 </targets>
+                                 <users>
+                                     <user>Any</user>
+                                 </users>
+                                 <sources>
+                                     <source type="Object">
+                                         <object_name>1.1.1.0</object_name>
+                                         <management_name>NetScreen</management_name>
+                                     </source>
+                                     <source type="EXTERNAL_RESOURCE">
+                                         <resource_ref>
+                                             <name>asg15-api-test</name>
+                                         </resource_ref>
+                                     </source>
+                                 </sources>
+                                 <destinations>
+                                     <destination type="Object">
+                                         <object_name>network_regi3</object_name>
+                                         <management_name>ASA</management_name>
+                                     </destination>
+                                     <destination type="EXTERNAL_RESOURCE">
+                                         <resource_ref>
+                                             <id>916ca6a9-76e2-3d9f-a35c-134f0981791a</id>
+                                         </resource_ref>
+                                     </destination>
+                                 </destinations>
+                                 <services>
+                                     <service type="ANY">
+                                     </service>
+                                 </services>
+                                 <action>Accept</action>
+                                 <labels/>
+                             </access_request>
+                         </field>
+                         <field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="text_area">
+                             <name>Business Justification</name>
+                             <text>I need access to ftp </text>
+                         </field>
+                         <field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="text_field">
+                             <name>Project Number</name>
+                             <text>CR124560 </text>
+                         </field>
+                         <field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="hyperlink">
+                             <name>Hyperlink</name>
+                             <url>http://192.168.1.1/ticket</url>
+                         </field>
+                         <field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="drop_down_list">
+                             <name>Change Window</name>
+                             <selection>Monday</selection>
+                         </field>
+                         <field xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="manager">
+                             <name>manager email</name>
+                             <text>manager@tufin.com</text>
+                         </field>
+                     </fields>
+                 </task>
+             </tasks>
+        </step>
+    </steps>
+    <comments/>
+</ticket>

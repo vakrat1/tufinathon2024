@@ -66,9 +66,6 @@ def main():
 
         # Append the latest interaction to the history
         history.extend([prompt, answer])
-        prompt = input("Please input an instruction (Press ENTER to use the example instruction): ")
-        if prompt == '':
-            prompt = query_example
 
 def run_chaty(prompt, context):
     config = yaml.load(open('config.yaml', 'r'), Loader=yaml.FullLoader)

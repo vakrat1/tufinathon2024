@@ -7,50 +7,6 @@ from langchain.prompts.prompt import PromptTemplate
 from langchain.llms.base import BaseLLM
 
 icl_examples = {
-    "tmdb": """Example 1:
-User query: give me some movies performed by Tony Leung.
-Plan step 1: search person with name "Tony Leung"
-API response: Tony Leung's person_id is 1337
-Plan step 2: collect the list of movies performed by Tony Leung whose person_id is 1337
-API response: Shang-Chi and the Legend of the Ten Rings, In the Mood for Love, Hero
-Thought: I am finished executing a plan and have the information the user asked for or the data the used asked to create
-Final Answer: Tony Leung has performed in Shang-Chi and the Legend of the Ten Rings, In the Mood for Love, Hero
-
-Example 2:
-User query: Who wrote the screenplay for the most famous movie directed by Martin Scorsese?
-Plan step 1: search for the most popular movie directed by Martin Scorsese
-API response: Successfully called GET /search/person to search for the director "Martin Scorsese". The id of Martin Scorsese is 1032
-Plan step 2: Continue. search for the most popular movie directed by Martin Scorsese (1032)
-API response: Successfully called GET /person/{{person_id}}/movie_credits to get the most popular movie directed by Martin Scorsese. The most popular movie directed by Martin Scorsese is Shutter Island (11324)
-Plan step 3: search for the screenwriter of Shutter Island
-API response: The screenwriter of Shutter Island is Laeta Kalogridis (20294)
-Thought: I am finished executing a plan and have the information the user asked for or the data the used asked to create
-Final Answer: Laeta Kalogridis wrote the screenplay for the most famous movie directed by Martin Scorsese.
-""",
-    "spotify": """Example 1:
-User query: set the volume to 20 and skip to the next track.
-Plan step 1: set the volume to 20
-API response: Successfully called PUT /me/player/volume to set the volume to 20.
-Plan step 2: skip to the next track
-API response: Successfully called POST /me/player/next to skip to the next track.
-Thought: I am finished executing a plan and completed the user's instructions
-Final Answer: I have set the volume to 20 and skipped to the next track.
-
-Example 2:
-User query: Make a new playlist called "Love Coldplay" containing the most popular songs by Coldplay
-Plan step 1: search for the most popular songs by Coldplay
-API response: Successfully called GET /search to search for the artist Coldplay. The id of Coldplay is 4gzpq5DPGxSnKTe4SA8HAU
-Plan step 2: Continue. search for the most popular songs by Coldplay (4gzpq5DPGxSnKTe4SA8HAU)
-API response: Successfully called GET /artists/4gzpq5DPGxSnKTe4SA8HAU/top-tracks to get the most popular songs by Coldplay. The most popular songs by Coldplay are Yellow (3AJwUDP919kvQ9QcozQPxg), Viva La Vida (1mea3bSkSGXuIRvnydlB5b).
-Plan step 3: make a playlist called "Love Coldplay"
-API response: Successfully called GET /me to get the user id. The user id is xxxxxxxxx.
-Plan step 4: Continue. make a playlist called "Love Coldplay"
-API response: Successfully called POST /users/xxxxxxxxx/playlists to make a playlist called "Love Coldplay". The playlist id is 7LjHVU3t3fcxj5aiPFEW4T.
-Plan step 5: Add the most popular songs by Coldplay, Yellow (3AJwUDP919kvQ9QcozQPxg), Viva La Vida (1mea3bSkSGXuIRvnydlB5b), to playlist "Love Coldplay" (7LjHVU3t3fcxj5aiPFEW4T)
-API response: Successfully called POST /playlists/7LjHVU3t3fcxj5aiPFEW4T/tracks to add Yellow (3AJwUDP919kvQ9QcozQPxg), Viva La Vida (1mea3bSkSGXuIRvnydlB5b) in playlist "Love Coldplay" (7LjHVU3t3fcxj5aiPFEW4T). The playlist id is 7LjHVU3t3fcxj5aiPFEW4T.
-Thought: I am finished executing a plan and have the data the used asked to create
-Final Answer: I have made a new playlist called "Love Coldplay" containing Yellow and Viva La Vida by Coldplay.
-""",
     "tufin": """Example 1:
 User query: get the details about device 12 in JSON format
 Plan step 1: get the device with id=12
@@ -71,7 +27,7 @@ Example 3:
 User query: Get list of waiting provisioning tasks in queue for all the management devices of the PaloAltoNetworks devices tree
 Plan step 1: get all the PaloAltoNetworks management devices 
 API response: Successfully called GET /securetrack/api/devices.json?vendor=PaloAltoNetworks to get all the PaloAltoNetworks devices
-PLan step 2:  Continue. No need to call another API in this step. Take from the response only those devices that their  "virtual_type" field's value is "management". The device is is 26
+PLan step 2: Continue. No need to call another API in this step. Take from the response only those devices that their  "virtual_type" field's value is "management". The device is is 26
 Plan step 2: Continue. For each device id from step 1, get its list of waiting tasks in queue
 API response: Successfully called GET /securetrack/api/devices/provisioning/waiting_tasks/{{id}} to get the list of waiting tasks in queue for a management device id
 Thought: I am finished executing a plan and have the data the used asked to create
@@ -132,7 +88,7 @@ Final Answer: the final output from executing the plan
 
 Begin!
 
-User query: {input}
+User query and History: {input}
 Plan step 1: {agent_scratchpad}"""
 
 

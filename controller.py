@@ -1,3 +1,5 @@
+import json
+
 from flask import Flask, jsonify, request
 import run
 
@@ -10,7 +12,8 @@ def chaty():
     query = request_data['query']
     context = request_data['context']
     answer = run.run_chaty(query, context)
-    return answer
+    answer_json = {"answer": answer}
+    return json.dumps(answer_json)
 
 if __name__ == "__main__":
     port = int(os.environ.get('PORT', 5000))

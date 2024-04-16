@@ -38,21 +38,25 @@ def setup_scenario(api_spec):
     return RestGPT(llm, api_spec=api_spec, scenario='tufin', requests_wrapper=requests_wrapper, simple_parser=False)
 
 def run_chaty(prompt, context, rest_gpt):
-    if prompt.lower().startswith("what did we do before"):
-        logger.info("Go to Swagger API, here is the link: https://192.168.32.84/securetrack/apidoc/ and find between all the APIs something that will be relevant")
-        return "Go to Swagger API, here is the link: https://192.168.32.84/securetrack/apidoc/ and find between all the APIs something that will be relevant"
-    if prompt.lower().startswith("what do we do now?"):
-        logger.info("Ask me any API question and I will solve all your problems!")
-        return "Ask me any API question and I will solve all your problems!"
+    try:
+        if prompt.lower().startswith("what did we do before"):
+            logger.info("Go to Swagger API, here is the link: https://192.168.32.84/securetrack/apidoc/ and find between all the APIs something that will be relevant")
+            return "Go to Swagger API, here is the link: https://192.168.32.84/securetrack/apidoc/ and find between all the APIs something that will be relevant"
+        if prompt.lower().startswith("what do we do now?"):
+            logger.info("Ask me any API question and I will solve all your problems!")
+            return "Ask me any API question and I will solve all your problems!"
 
-    full_query = f"Previous conversations: {context} User question: {prompt}" if context else prompt
-    logger.info(f"Query: {full_query}")
+        full_query = f"Previous conversations: {context} User question: {prompt}" if context else prompt
+        logger.info(f"Query: {full_query}")
 
-    answer = rest_gpt.run(full_query)
-    logger.info(f"Answer: {answer}")
-    logger.info(f"Execution Time: {time.time() - time.time()}")
+        answer = rest_gpt.run(full_query)
+        logger.info(f"Answer: {answer}")
+        logger.info(f"Execution Time: {time.time() - time.time()}")
 
-    return answer
+        return answer
+    except Exception as e:
+        logger.error(f"An error occurred: {e}")
+        return "Encountered an error, can you ask the question again? Try to be specific."
 
 def main():
     initialize_logging()

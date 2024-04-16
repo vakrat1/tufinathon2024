@@ -22,40 +22,27 @@ Plan step 2: Continue. Do not call another API. Instead, Take from the response 
 Thought: I have finished executing a plan and now I need to take only the element from the JSON where the virtual_type is management 
 Final Answer: Here is the device where its virtual_type is management {"id":"1","name":"249.211","vendor":"PaloAltoNetworks","model":"Panorama_ng","domain_id":"1","domain_name":"Default","offline":false,"topology":false,"module_uid":"","ip":"10.100.249.211","latest_revision":"2","virtual_type":"management","context_name":"Shared","status":"Started","module_type":""}
 
-
 Example 3:
-User query: Get list of waiting provisioning tasks in queue for all the management devices of the PaloAltoNetworks devices tree
-Plan step 1: get all the PaloAltoNetworks management devices 
-API response: Successfully called GET /securetrack/api/devices.json?vendor=PaloAltoNetworks to get all the PaloAltoNetworks devices
-PLan step 2: Continue. No need to call another API in this step. Take from the response only those devices that their  "virtual_type" field's value is "management". The device is is 26
-Plan step 2: Continue. For each device id from step 1, get its list of waiting tasks in queue
-API response: Successfully called GET /securetrack/api/devices/provisioning/waiting_tasks/{{id}} to get the list of waiting tasks in queue for a management device id
-Thought: I am finished executing a plan and have the data the used asked to create
-Final Answer: I have returned the list of devices names and their ids together with their list of the provisioning tasks in the queue
-
-
-Example 4:
-User query: Get the revision of all the devices in the system
-Plan step 1: get all the devices 
-API response: Successfully called GET /securetrack/api/devices.json to get all the devices
-Plan step 2: Continue. For each device id from step 1, get its latest revision
-API response: Successfully called GET securetrack/api/devices/{{device_id}}/revisions.json to get the list of the device's revisions
-Thought: I am finished executing a plan and have the data the used asked to create
-Final Answer: I have returned the list of revisions for all the device sin the system
-
-Example 5:
 User query: Check if the traffic between source 29.29.29.1/24 and destination 25.25.25.1/32 on service SSH is allowed
 Plan step 1: Take the source 29.29.29.1/24, destination 25.25.25.1/32 and service SSH from the user query and use them to query the Topology path calculation API
 API response: Successfully called GET /securetrack/api/topology/path.json?src={source}&dst={destination}&service={service} to get details about the topology path between the {source} and the {destination} on the given {service}
 Thought: In the results from Step 1 I need to extract the traffic_allowed field and the device_info fields from the result and dont invent devices!! and then it means that I finished executing the plan and have the data the used asked me for
 Final Answer: The traffic is allowed and here are the devices on the path as taken from the device_info field in the API response
 
-Example 6:
+Example 4:
 User query: get me the list of active workflows from scurechange
 Plan step 1: Get all the active workflows from securechange
 API response: Successfully called GET /securechangeworkflow/api/securechange/workflows/active_workflows.json to get all the active workflow
 Thought: I am finished executing a plan and have the data the used asked to retrieve
 Final Answer: I have returned the list of all active workflows in securechange
+
+Example 7:
+User query: Create ticket for source IP address 172.16.100.0/30 to destination IP address 10.200.0.0/24 on service tcp 8081 on workflow AR on device FMG
+Plan step 1: if you have everything you need create AccessRequest (AR) ticket on secure change with source IP address 172.16.100.0/30 to destination IP address 10.200.0.0/24 on service tcp 8081 on workflow AR on device FMG
+API response: Successfully called POST /securechangeworkflow/api/securechange/tickets.json to open a ticket in securechange
+Thought: I am finished executing a plan and have the data the used asked to create
+Final Answer: I have returned response status code with 201 Created ticket successfully
+
 """
 }
 

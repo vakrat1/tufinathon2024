@@ -45,8 +45,16 @@ def run_chaty(prompt, context, rest_gpt):
         if prompt.lower().startswith("what do we do now?"):
             logger.info("Ask me any API question and I will solve all your problems!")
             return "Ask me any API question and I will solve all your problems!"
-
-        full_query = f"Previous conversations: {context} User question: {prompt}" if context else prompt
+        if prompt.lower().startswith("hi, how are you"):
+            logger.info("Hello, im here to assist you with APIs how can I help?")
+            return "hello, im here to assist you with APIs how can i help?"
+        if prompt.lower().startswith("whats the weather"):
+            logger.info("Im not qualified to answer this question, you can teach me the API for weather")
+            return "Im not qualified to answer this question, you can teach me the API for weather"
+        if prompt.lower().startswith("what else cam you do"):
+            logger.info("I can show the world, the tos API world")
+            return "I can show the world, the tos API world"
+        full_query = f"Previous conversations: {context} User question: {prompt}"
         logger.info(f"Query: {full_query}")
 
         answer = rest_gpt.run(full_query)

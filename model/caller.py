@@ -88,7 +88,7 @@ Operation: POST
 Input: {{
     "url": "https://192.168.32.84/securechangeworkflow/api/securechange/tickets.json",
     "data": {{
-         "subject": "OMERTEST",
+         "subject": "demo ticket",
          "priority": "Normal",
          "workflow.id": 10,
          "workflow.name": AR,

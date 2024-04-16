@@ -41,15 +41,12 @@ def main():
     requests_wrapper = Requests(headers=headers)
 
     llm = OpenAI(model_name="gpt-3.5-turbo-0125", temperature=0.0, max_tokens=700)
-    query_example = "For traffic between source IP address 172.16.100.0/30 to destination IP address 10.200.0.0/24 on service tcp:8081, check if it is blocked. If it does block get the device_info of this topology path and open an AccessRequest with ticket subject 'TATATEST' ticket with wordflow id 10 and name AR with action Accept"
 
     history = []  # Initialize the conversation history
     while True:
         rest_gpt = RestGPT(llm, api_spec=api_spec, scenario=scenario, requests_wrapper=requests_wrapper, simple_parser=False)
         start_time = time.time()
         prompt = input("Please input an instruction (Press ENTER to use the example instruction): ")
-        if prompt == '':
-            prompt = query_example
         context = " ".join(history[-10:])  # Using the last 10 interactions for context
         # Gather the complete conversation history as context for the new query
         if context:

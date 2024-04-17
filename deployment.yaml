@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chaty
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chaty
+  template:
+    metadata:
+      labels:
+        app: chaty
+    spec:
+      containers:
+        - name: chaty
+          image: docker.io/library/chaty
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+              protocol: TCP

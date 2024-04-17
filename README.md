@@ -115,3 +115,26 @@ If you find this repo useful, please cite us.
 }
 ```
 
+
+## Deploy Chaty to K8S
+
+Build the docker image
+- docker build -t chaty . 
+
+Run the docker image locally to verify that the image is working well
+- docker run -p 8080:8080 -it chaty
+
+Save the image as tar file
+- docker save chaty > chaty.tar  
+
+Load the image to the TOS server
+- scp chaty.tar root@192.168.32.195:/tmp
+
+Import the image to the local registry
+- ctr images import chaty.tar
+
+(NOT NEEDED - Push the image to the registry)
+(- ctr images push localhost:32500/tos-ci/chaty:latest -u registry:"$(kubectl get secret -n kube-system tos-registry-htpasswd -o jsonpath='{.data.password}' | base64 --d)" -k)
+
+Delete the chaty POD if exist, and then recreate it 
+- kubectl delete po <CHATY>

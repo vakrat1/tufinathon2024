@@ -12,6 +12,7 @@ from model import RestGPT
 
 logger = logging.getLogger()
 
+
 def initialize_logging():
     logging.basicConfig(
         format="%(message)s",
@@ -19,11 +20,13 @@ def initialize_logging():
     )
     logger.setLevel(logging.INFO)
 
+
 def load_configuration():
     config = yaml.load(open('config.yaml', 'r'), Loader=yaml.FullLoader)
     os.environ["OPENAI_API_KEY"] = config['openai_api_key']
     os.environ['TUFIN_BASIC_AUTH'] = config['tufin_basic_auth']
     return config
+
 
 def initialize_api_scenario():
     with open("specs/tufin_oas.json") as f:
@@ -31,16 +34,23 @@ def initialize_api_scenario():
     api_spec = reduce_openapi_spec(raw_api_spec, only_required=False, merge_allof=True)
     return api_spec
 
+
 def setup_scenario(api_spec):
     headers = {'Authorization': f'Basic {os.environ["TUFIN_BASIC_AUTH"]}'}
     requests_wrapper = Requests(headers=headers)
     llm = OpenAI(model_name="gpt-3.5-turbo-0125", temperature=0.0, max_tokens=700)
     return RestGPT(llm, api_spec=api_spec, scenario='tufin', requests_wrapper=requests_wrapper, simple_parser=False)
 
-def run_chaty(prompt, context, rest_gpt):
+
+def run_chaty(prompt, context):
+    initialize_logging()
+    config = load_configuration()
+    api_spec = initialize_api_scenario()
+    rest_gpt = setup_scenario(api_spec)
     try:
         if prompt.lower().startswith("what did we do before"):
-            logger.info("Go to Swagger API, here is the link: https://192.168.32.84/securetrack/apidoc/ and find between all the APIs something that will be relevant")
+            logger.info(
+                "Go to Swagger API, here is the link: https://192.168.32.84/securetrack/apidoc/ and find between all the APIs something that will be relevant")
             return "Go to Swagger API, here is the link: https://192.168.32.84/securetrack/apidoc/ and find between all the APIs something that will be relevant"
         if prompt.lower().startswith("what do we do now?"):
             logger.info("Ask me any API question and I will solve all your problems!")
@@ -66,20 +76,17 @@ def run_chaty(prompt, context, rest_gpt):
         logger.error(f"An error occurred: {e}")
         return "Encountered an error, can you ask the question again? Try to be specific."
 
-def main():
-    initialize_logging()
-    config = load_configuration()
-    api_spec = initialize_api_scenario()
-    rest_gpt = setup_scenario(api_spec)
 
+def main():
     history = []
     while True:
         prompt = input("Please input an instruction (Press ENTER to use the example instruction): ")
         context = " ".join(history[-10:])  # Using the last 10 interactions for context
-        answer = run_chaty(prompt, context, rest_gpt)
+        answer = run_chaty(prompt, context)
         history.extend([prompt, answer])
         if answer:
             logger.info(f"Answer: {answer}")
+
 
 if __name__ == '__main__':
     main()

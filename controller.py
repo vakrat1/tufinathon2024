@@ -14,7 +14,18 @@ def chaty():
     query = request_data['query']
     context = "\n".join(request_data['context'])
     answer = run.run_chaty(query, context)
-    answer_json = {"answer": answer}
+
+    # Search for the 'Final Answer:' in the response
+    answer_marker = "Final Answer:"
+    if answer_marker in answer:
+        # Split the answer on 'Final Answer:' and take the second part
+        final_answer = answer.split(answer_marker, 1)[1].strip()
+    else:
+        # If 'Final Answer:' is not found, set a default message
+        final_answer = "Could not answer"
+
+    # Create a JSON object with the final answer
+    answer_json = {"answer": final_answer}
     return json.dumps(answer_json)
 
 if __name__ == "__main__":

@@ -104,6 +104,28 @@ Input: {{
     "output_instructions": "Dont try to parse the response's body, Just check if the HTTP response code is 201 "
 }}
 
+
+Example 8:
+Operation: POST
+Input: {{
+    "url": "https://192.168.32.84/securetrack/api/topology/generic/interface.json",
+    "data": {{
+            "GenericInterfaces" : [{{
+            "mgmtId": "1",
+            "name": "Bob1",
+            "ip": "100.100.45.55",
+            "mask": "255.255.0.0",
+            "vrf": "",
+            "mpls": false,
+            "unnumbered": false,
+            "type": "external"    
+            }}]   
+            
+    }},
+    "description": "The API response with a 200 HTTP response code with empty body, Add an inner generic interface with mgmtId 1,name "Bob1",ip "100.100.45.55" mask "255.255.0.0",vrf "" and other parameters as specified in request body, The API response with a 200 HTTP response code with empty body",
+    "output_instructions": "Dont try to parse the response's body, Just check if the HTTP response code is 200 "
+}}
+
 I will give you the background information and the plan you should execute.
 Background: background information which you can use to execute the plan, e.g., the id of a person.
 Plan: the plan of API calls to execute
@@ -333,17 +355,6 @@ class Caller(Chain):
             called_endpoint_name = get_matched_endpoint(self.api_spec, called_endpoint_name)[0]
             api_path = api_url + called_endpoint_name.split(' ')[-1]
             api_doc_for_parser = endpoint_docs_by_name.get(called_endpoint_name)
-            if self.scenario == 'spotify' and endpoint_name == "GET /search":
-                if params is not None and 'type' in params:
-                    search_type = params['type'] + 's'
-                else:
-                    params_in_url = json.loads(action_input)['url'].split('&')
-                    for param in params_in_url:
-                        if 'type=' in param:
-                            search_type = param.split('=')[-1] + 's'
-                            break
-                api_doc_for_parser['responses']['content']['application/json']["schema"]['properties'] = {search_type: api_doc_for_parser['responses']['content']['application/json']["schema"]['properties'][search_type]}
-
             if not self.simple_parser:
                 response_parser = ResponseParser(
                     llm=self.llm,

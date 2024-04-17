@@ -11,6 +11,40 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/securetrack/api/topology/generic/interface.json": {
+      "post": {
+        "summary": "Create generic Interfaces",
+        "description": "Create generic Interfaces.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/GenericInterfacesDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK."
+          },
+          "400": {
+            "description": "Bad Request."
+          },
+          "403": {
+            "description": "Access is denied."
+          },
+          "404": {
+            "description": "Management Not Found."
+          },
+          "500": {
+            "description": "General error occurred."
+          }
+        }
+      }
+    },
     "/securetrack/api/devices/{id}.json": {
       "get": {
         "summary": "Get specific device",
@@ -1145,6 +1179,53 @@
           },
           "type": {
             "type": "string"
+          }
+        }
+      },
+      "GenericInterfacesDTO": {
+        "type": "object",
+        "properties": {
+          "GenericInterfaces": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "mgmtId": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "ip": {
+                  "type": "string"
+                },
+                "mask": {
+                  "type": "string"
+                },
+                "vrf": {
+                  "type": "string"
+                },
+                "mpls": {
+                  "type": "boolean"
+                },
+                "unnumbered": {
+                  "type": "boolean"
+                },
+                "type": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "mgmtId",
+                "name",
+                "ip",
+                "mask",
+                "vrf",
+                "mpls",
+                "unnumbered",
+                "type"
+              ]
+            }
           }
         }
       },

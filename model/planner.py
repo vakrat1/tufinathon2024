@@ -43,6 +43,13 @@ API response: Successfully called POST /securechangeworkflow/api/securechange/ti
 Thought: I am finished executing a plan and have the data the used asked to create
 Final Answer: I have returned response status code with 201 Created ticket successfully
 
+Example 8:
+User query: add a generic interface with ip 244.1.1.1 mask 255.255.255.0 to mgmtId 2 named bob
+Plan step 1: Add an generic interface with ip 10.10.10.1 and mask 255.255.255.0 to mgmtId 2 named bob
+API response: Successfully called POST /securetrack/api/topology/generic/interface.json with ip mask device and name to add the interface
+Thought: I am finished executing a plan.
+Final Answer: I have successfully added the requested interface
+
 """
 }
 
@@ -55,6 +62,7 @@ In most case, search, filter, and sort should be completed in a single step.
 The plan should be as specific as possible. It is better not to use pronouns in plan, but to use the corresponding results obtained previously. For example, instead of "Get the most popular movie directed by this person", you should output "Get the most popular movie directed by Martin Scorsese (1032)". If you want to iteratively query something about items in a list, then the list and the elements in the list should also appear in your plan.
 The plan should be straightforward. If you want to search, sort or filter, you can put the condition in your plan. For example, if the query is "Who is the lead actor of In the Mood for Love (id 843)", instead of "get the list of actors of In the Mood for Love", you should output "get the lead actor of In the Mood for Love (843)".
 If 
+
 
 
 Starting below, you should follow this format:

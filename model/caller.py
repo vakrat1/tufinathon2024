@@ -32,7 +32,7 @@ The response is in a JSON format.
 If the response is not a legal JSON format, perform the API call again.
 You should use the entire JSON response. Do not truncate the response and do not limit the resposne.
 When interacting with API objects, you should extract ids for inputs to other API calls but return all the data fields as outputs returned to the User.
-If you cannot complete them and run into issues, you should explain the issue. 
+If you cannot complete them and run into issues, you should explain the issue and request the missing data. 
 Your task is to complete the corresponding api calls according to the plan.
 You should filter the results based on the query you have been given. If there is a paramter in the query you should filter the results based on that parameter.
 
@@ -55,46 +55,14 @@ When invoking a POST API map the fields in the "data" element to the corresponde
 Remember to add a comma after every value except the last one, ensuring that the overall structure of the JSON remains valid.
 
 Example 1:
-Operation: POST
-Input: {{
-    "url": "https://api.twitter.com/2/tweets",
-    "params": {{
-        "tweet.fields": "created_at"
-    }}
-    "data": {{
-        "text": "Hello world!"
-    }},
-    "description": "The API response is a twitter object.",
-    "output_instructions": "What is the id of the new twitter?"
-}}
-
-Example 2:
-Operation: GET
-Input: {{
-    "url": "https://api.themoviedb.org/3/person/5026/movie_credits",
-    "description": "The API response is the movie credit list of Akira Kurosawa (id 5026)",
-    "output_instructions": "What are the names and ids of the movies directed by this person?"
-}}
-
-Example 3:
-Operation: PUT
-Input: {{
-    "url": "https://api.spotify.com/v1/me/player/volume",
-    "params": {{
-        "volume_percent": "20"
-    }},
-    "description": "Set the volume for the current playback device."
-}}
-
-Example 4:
 Operation: GET
 Input: {{
     "url": "https://192.168.32.84/securetrack/api/devices.json",
-    "description": "The API response is the list of all the devices ,onitored by Securetrack)",
+    "description": "The API response is the list of all the devices ,monitored by Securetrack)",
     "output_instructions": "Filter the API response by the query given by the user. For example, filter the results by virtual_type=management"
 }}
 
-Example 5:
+Example 2:
 Operation: GET
 Input: {{
     "url": "https://192.168.32.84/securetrack/api/topology/path,json?src=29.29.29.1/24&dst=25.25.25.1/32&service=Facebook,tcp:80",
@@ -107,7 +75,7 @@ Input: {{
     "output_instructions": "Filter the API response by the extracting the field traffic_allowed and the device_info fields. For example, traffic_allowed: false"
 }}
 
-Example 6:
+Example 3:
 Operation: GET
 Input: {{
     "url": "https://192.168.32.84/securechangeworkflow/api/securechange/workflows/active_workflows.json",
@@ -115,12 +83,12 @@ Input: {{
     "output_instructions": "return the list of the workflows from the API response "
 }}
 
-Example 7:
+Example 4:
 Operation: POST
 Input: {{
     "url": "https://192.168.32.84/securechangeworkflow/api/securechange/tickets.json",
     "data": {{
-         "subject": "OMERTEST",
+         "subject": "demo ticket",
          "priority": "Normal",
          "workflow.id": 10,
          "workflow.name": AR,
@@ -133,7 +101,29 @@ Input: {{
          "steps.step.tasks.task.fields.field.access_request.targets.target.object_name": "FMG/SD-WAN",
     }},
     "description": "The API response with a 201 HTTP response code with empty body",
-    "output_instructions": "Dont try to parse the response's body, Jsut check if the HTTP response code is 201 "
+    "output_instructions": "Dont try to parse the response's body, Just check if the HTTP response code is 201 "
+}}
+
+
+Example 8:
+Operation: POST
+Input: {{
+    "url": "https://192.168.32.84/securetrack/api/topology/generic/interface.json",
+    "data": {{
+            "GenericInterfaces" : [{{
+            "mgmtId": "1",
+            "name": "Bob1",
+            "ip": "100.100.45.55",
+            "mask": "255.255.0.0",
+            "vrf": "",
+            "mpls": false,
+            "unnumbered": false,
+            "type": "external"    
+            }}]   
+            
+    }},
+    "description": "The API response with a 200 HTTP response code with empty body, Add an inner generic interface with mgmtId 1,name "Bob1",ip "100.100.45.55" mask "255.255.0.0",vrf "" and other parameters as specified in request body, The API response with a 200 HTTP response code with empty body",
+    "output_instructions": "Dont try to parse the response's body, Just check if the HTTP response code is 200 "
 }}
 
 I will give you the background information and the plan you should execute.
@@ -144,7 +134,7 @@ You should execute the plan faithfully and give the Final Answer as soon as you 
 
 Starting below, you must follow this format:
 
-Background: background information which you can use to execute the plan, e.g., the id of a person.
+Background: background information which you can use to execute the plan, e.g., the id of a workflow.
 Plan: the plan of API calls to execute
 Thought: you should always think about what to do
 Operation: the request method to take, should be one of the following: GET, POST, DELETE, PATCH, PUT
@@ -365,17 +355,6 @@ class Caller(Chain):
             called_endpoint_name = get_matched_endpoint(self.api_spec, called_endpoint_name)[0]
             api_path = api_url + called_endpoint_name.split(' ')[-1]
             api_doc_for_parser = endpoint_docs_by_name.get(called_endpoint_name)
-            if self.scenario == 'spotify' and endpoint_name == "GET /search":
-                if params is not None and 'type' in params:
-                    search_type = params['type'] + 's'
-                else:
-                    params_in_url = json.loads(action_input)['url'].split('&')
-                    for param in params_in_url:
-                        if 'type=' in param:
-                            search_type = param.split('=')[-1] + 's'
-                            break
-                api_doc_for_parser['responses']['content']['application/json']["schema"]['properties'] = {search_type: api_doc_for_parser['responses']['content']['application/json']["schema"]['properties'][search_type]}
-
             if not self.simple_parser:
                 response_parser = ResponseParser(
                     llm=self.llm,

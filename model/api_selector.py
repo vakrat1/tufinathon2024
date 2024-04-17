@@ -422,8 +422,17 @@ Example 7:
 
 Background: There is a blocked traffic on device management FMG/SD-WAN and device name FortiGate_7_0_112_244-SD-WAN between Source address 10.10.10.1/24 and Destination address 3.3.3.3/30 on service TCP:80
 User query: Create AccessRequest (AR) ticket with subject OMERTEST with workflow id 10 and name AR with target device management FMG/SD-WAN and device name FortiGate_7_0_112_244-SD-WAN with Source address of IP 10.251.4.0/23 and Destination address of IP 10.252.0.0/22 on service TCP:80 and Action Accept
-API calling 1: POST /securechangeworkflow/api/securechange/tickets.json with request body content as JSON { "ticket": { "subject": "OMERTEST", "priority": "Normal", "domain_name": "", "workflow": { "id": 7, "name": "AR", "uses_topology": true }, "steps": { "step": [ { "name": "Open request", "tasks": { "task": { "fields": { "field": { "@xsi.type": "multi_access_request", "name": "ar", "access_request": { "use_topology": true, "targets": { "target": { "@type": "Object", "object_name": "FortiGate_7_0_112_244-SD-WAN", "management_name": "FMG/SD-WAN" } }, "users": { "user": [ "Any" ] }, "sources": { "source": [ { "@type": "IP", "ip_address": "172.16.100.0", "netmask": "255.255.255.252", "cidr": 30 } ] }, "destinations": { "destination": [ { "@type": "IP", "ip_address": "10.200.0.0", "netmask": "255.255.255.0", "cidr": 24 } ] }, "services": { "service": [ { "@type": "PROTOCOL", "protocol": "TCP", "port": 22 } ] }, "action": "Accept", "labels": "" } } } } } } ] }, "comments": "" } }
+API calling 1: POST /securechangeworkflow/api/securechange/tickets.json with request body content as JSON { "ticket": { "subject": "blocked traffic on FortiGate_7_0_112_244-SD-WAN", "priority": "Normal", "domain_name": "", "workflow": { "id": 7, "name": "AR", "uses_topology": true }, "steps": { "step": [ { "name": "Open request", "tasks": { "task": { "fields": { "field": { "@xsi.type": "multi_access_request", "name": "ar", "access_request": { "use_topology": true, "targets": { "target": { "@type": "Object", "object_name": "FortiGate_7_0_112_244-SD-WAN", "management_name": "FMG/SD-WAN" } }, "users": { "user": [ "Any" ] }, "sources": { "source": [ { "@type": "IP", "ip_address": "172.16.100.0", "netmask": "255.255.255.252", "cidr": 30 } ] }, "destinations": { "destination": [ { "@type": "IP", "ip_address": "10.200.0.0", "netmask": "255.255.255.0", "cidr": 24 } ] }, "services": { "service": [ { "@type": "PROTOCOL", "protocol": "TCP", "port": 80 } ] }, "action": "Accept", "labels": "" } } } } } } ] }, "comments": "" } }
 API response: response status code with 201 Created
+
+
+
+Example 8:
+
+Background: The is a generic interface i would like to add to a mgmtId with a name,ip and mask
+User query: add a generic interface with ip 244.1.1.1 mask 255.255.255.0 to mgmtId 2 named Bob1
+API calling 1: POST /securetrack/api/topology/generic/interface with request body content as JSON { "GenericInterfaces": [ { "mgmtId": 2, "name": "Bob1", "ip": "244.1.1.1", "mask": "255.255.255.0", "vrf": "","mpls": false, "unnumbered": false,"type": "external"}] } with mgmtId 2,name "Bob1" ,ip "244.1.1.1" and mask "255.255.255.0" in the body
+API response: response status code with 200 Created
 """
 }
 
@@ -455,7 +464,7 @@ Instruction: Another model will evaluate whether the user query has been fulfill
 
 {icl_examples}
 
-
+Note, if you are missing value to construct the API you can return result requesting the missing value
 Note, if the API path contains "{{}}", it means that it is a variable and you should replace it with the appropriate value. For example, if the path is "/users/{{user_id}}/tweets", you should replace "{{user_id}}" with the user id. "{{" and "}}" cannot appear in the url. In most cases, the id value is in the background or the API response. Just copy the id faithfully. If the id is not in the background, instead of creating one, call other APIs to query the id. For example, before you call "/users/{{user_id}}/playlists", you should get the user_id via "GET /me" first. Another example is that before you call "/person/{{person_id}}", you should get the movie_id via "/search/person" first.
 
 Begin!
@@ -543,8 +552,9 @@ class APISelector(Chain):
         if finish is not None:
             return {"result": api_plan}
 
-
-        while get_matched_endpoint(self.api_spec, api_plan) is None:
+        iterations = 0
+        while get_matched_endpoint(self.api_spec, api_plan) is None and iterations < 3:
+            iterations = iterations + 1
             logger.info("API Selector: The API you called is not in the list of available APIs. Please use another API.")
             scratchpad += api_selector_chain_output + "\nThe API you called is not in the list of available APIs. Please use another API.\n"
             api_selector_chain_output = api_selector_chain.run(plan=inputs['plan'], background=inputs['background'], agent_scratchpad=scratchpad, stop=self._stop)

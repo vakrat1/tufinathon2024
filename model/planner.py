@@ -22,41 +22,33 @@ Plan step 2: Continue. Do not call another API. Instead, Take from the response 
 Thought: I have finished executing a plan and now I need to take only the element from the JSON where the virtual_type is management 
 Final Answer: Here is the device where its virtual_type is management {"id":"1","name":"249.211","vendor":"PaloAltoNetworks","model":"Panorama_ng","domain_id":"1","domain_name":"Default","offline":false,"topology":false,"module_uid":"","ip":"10.100.249.211","latest_revision":"2","virtual_type":"management","context_name":"Shared","status":"Started","module_type":""}
 
-
 Example 3:
-User query: Get list of waiting provisioning tasks in queue for all the management devices of the PaloAltoNetworks devices tree
-Plan step 1: get all the PaloAltoNetworks management devices 
-API response: Successfully called GET /securetrack/api/devices.json?vendor=PaloAltoNetworks to get all the PaloAltoNetworks devices
-PLan step 2: Continue. No need to call another API in this step. Take from the response only those devices that their  "virtual_type" field's value is "management". The device is is 26
-Plan step 2: Continue. For each device id from step 1, get its list of waiting tasks in queue
-API response: Successfully called GET /securetrack/api/devices/provisioning/waiting_tasks/{{id}} to get the list of waiting tasks in queue for a management device id
-Thought: I am finished executing a plan and have the data the used asked to create
-Final Answer: I have returned the list of devices names and their ids together with their list of the provisioning tasks in the queue
-
-
-Example 4:
-User query: Get the revision of all the devices in the system
-Plan step 1: get all the devices 
-API response: Successfully called GET /securetrack/api/devices.json to get all the devices
-Plan step 2: Continue. For each device id from step 1, get its latest revision
-API response: Successfully called GET securetrack/api/devices/{{device_id}}/revisions.json to get the list of the device's revisions
-Thought: I am finished executing a plan and have the data the used asked to create
-Final Answer: I have returned the list of revisions for all the device sin the system
-
-Example 5:
 User query: Check if the traffic between source 29.29.29.1/24 and destination 25.25.25.1/32 on service SSH is allowed
 Plan step 1: Take the source 29.29.29.1/24, destination 25.25.25.1/32 and service SSH from the user query and use them to query the Topology path calculation API
 API response: Successfully called GET /securetrack/api/topology/path.json?src={source}&dst={destination}&service={service} to get details about the topology path between the {source} and the {destination} on the given {service}
-Thought: In the results from Step 1 I need to extract the traffic_allowed field and the device_info fields and then it means that I finished executing the plan and have the data the used asked me for
+Thought: In the results from Step 1 I need to extract the traffic_allowed field and the device_info fields from the result and dont invent devices!! and then it means that I finished executing the plan and have the data the used asked me for
 Final Answer: The traffic is allowed and here are the devices on the path as taken from the device_info field in the API response
 
-Example 6:
+Example 4:
 User query: get me the list of active workflows from scurechange
 Plan step 1: Get all the active workflows from securechange
 API response: Successfully called GET /securechangeworkflow/api/securechange/workflows/active_workflows.json to get all the active workflow
 Thought: I am finished executing a plan and have the data the used asked to retrieve
 Final Answer: I have returned the list of all active workflows in securechange
 
+Example 7:
+User query: Create ticket for source IP address 172.16.100.0/30 to destination IP address 10.200.0.0/24 on service tcp 8081 on workflow AR on device FMG
+Plan step 1: if you have everything you need create AccessRequest (AR) ticket on secure change with source IP address 172.16.100.0/30 to destination IP address 10.200.0.0/24 on service tcp 8081 on workflow AR on device FMG
+API response: Successfully called POST /securechangeworkflow/api/securechange/tickets.json to open a ticket in securechange
+Thought: I am finished executing a plan and have the data the used asked to create
+Final Answer: I have returned response status code with 201 Created ticket successfully
+
+Example 8:
+User query: add a generic interface with ip 244.1.1.1 mask 255.255.255.0 to mgmtId 2 named bob
+Plan step 1: Add an generic interface with ip 10.10.10.1 and mask 255.255.255.0 to mgmtId 2 named bob
+API response: Successfully called POST /securetrack/api/topology/generic/interface.json with ip mask device and name to add the interface
+Thought: I am finished executing a plan.
+Final Answer: I have successfully added the requested interface
 
 """
 }
@@ -70,6 +62,7 @@ In most case, search, filter, and sort should be completed in a single step.
 The plan should be as specific as possible. It is better not to use pronouns in plan, but to use the corresponding results obtained previously. For example, instead of "Get the most popular movie directed by this person", you should output "Get the most popular movie directed by Martin Scorsese (1032)". If you want to iteratively query something about items in a list, then the list and the elements in the list should also appear in your plan.
 The plan should be straightforward. If you want to search, sort or filter, you can put the condition in your plan. For example, if the query is "Who is the lead actor of In the Mood for Love (id 843)", instead of "get the list of actors of In the Mood for Love", you should output "get the lead actor of In the Mood for Love (843)".
 If 
+
 
 
 Starting below, you should follow this format:
@@ -160,13 +153,4 @@ class Planner(Chain):
         planner_chain_output = re.sub(r"Plan step \d+: ", "", planner_chain_output).strip()
 
         return {"result": planner_chain_output}
-
-#Example 7:
-# User query: For traffic between src IP address 172.16.100.0/30 to destination IP address 10.200.0.0/24 on ANY service, check if the traffic is blocked. If it is blocked take from the device info the id, name, type and vendor of this topology path and create an AccessRequest (AR) ticket with subject AR_TEST with workflow id 10 and workflow name AR with priority Normal. Take the target device from the device_info including its name and its management name. Use the source from the path calculation. Take the destination fopm the path calculation as well. Take also the service details from the path calculation parameters. Action Accept
-# Plan step 1: For traffic between src IP address 172.16.100.0/30 to destination IP address 10.200.0.0/24 on ANY service, check if the traffic is blocked
-# API response: Successfully called GET /securetrack/api/topology/path.json?src={source}&dst={destination}&service={service} to check if a traffic between src ip  172.16.100.0/30 to destination IP 10.200.0.0/24 on a service any is blocked
-# Plan step 2: Continue. Take the device_info from the response of step 1. device_info contains the information about the devices on the path. For each such device retrive the devices id, type, name, vendor. Take also the source ip, destination ip and the service to open a ticket on secure change
-# API response: Successfully called POST /securechangeworkflow/api/securechange/tickets.json to open a ticket in securechange
-# Thought: I am finished executing a plan and have the data the used asked to create
-# Final Answer: I have returned response status code with 201 Created ticket successfully
 

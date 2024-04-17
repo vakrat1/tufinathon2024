@@ -12,120 +12,74 @@ from model import RestGPT
 
 logger = logging.getLogger()
 
-
-def main():
-    config = yaml.load(open('config.yaml', 'r'), Loader=yaml.FullLoader)
-    os.environ["OPENAI_API_KEY"] = config['openai_api_key']
-    os.environ['TUFIN_BASIC_AUTH'] = config['tufin_basic_auth']
-        
+def initialize_logging():
     logging.basicConfig(
         format="%(message)s",
         handlers=[logging.StreamHandler(ColorPrint())],
     )
     logger.setLevel(logging.INFO)
 
-    # scenario = input("Please select a scenario (TMDB/Spotify): ")
-    # scenario = scenario.lower()
-    scenario = 'tufin'
+def load_configuration():
+    config = yaml.load(open('config.yaml', 'r'), Loader=yaml.FullLoader)
+    os.environ["OPENAI_API_KEY"] = config['openai_api_key']
+    os.environ['TUFIN_BASIC_AUTH'] = config['tufin_basic_auth']
+    return config
 
+def initialize_api_scenario():
     with open("specs/tufin_oas.json") as f:
         raw_api_spec = json.load(f)
-
     api_spec = reduce_openapi_spec(raw_api_spec, only_required=False, merge_allof=True)
+    return api_spec
 
-    tufin_basic_auth = os.environ["TUFIN_BASIC_AUTH"]
-    headers = {
-        'Authorization': f'Basic {tufin_basic_auth}'
-    }
-
+def setup_scenario(api_spec):
+    headers = {'Authorization': f'Basic {os.environ["TUFIN_BASIC_AUTH"]}'}
     requests_wrapper = Requests(headers=headers)
-
     llm = OpenAI(model_name="gpt-3.5-turbo-0125", temperature=0.0, max_tokens=700)
-    query_example = "For traffic between source IP address 172.16.100.0/30 to destination IP address 10.200.0.0/24 on service tcp:8081, check if it is blocked. If it does block get the device_info of this topology path and open an AccessRequest with ticket subject 'TATATEST' ticket with wordflow id 10 and name AR with action Accept"
+    return RestGPT(llm, api_spec=api_spec, scenario='tufin', requests_wrapper=requests_wrapper, simple_parser=False)
 
-    history = []  # Initialize the conversation history
-    while True:
-        rest_gpt = RestGPT(llm, api_spec=api_spec, scenario=scenario, requests_wrapper=requests_wrapper, simple_parser=False)
-        start_time = time.time()
-        prompt = input("Please input an instruction (Press ENTER to use the example instruction): ")
-        if prompt == '':
-            prompt = query_example
-        context = " ".join(history[-10:])  # Using the last 10 interactions for context
-        # Gather the complete conversation history as context for the new query
-        if context:
-            full_query = f"Previous conversions {context} User question: {prompt}"
-        else:
-            full_query = prompt
-
+def run_chaty(prompt, context, rest_gpt):
+    try:
+        if prompt.lower().startswith("what did we do before"):
+            logger.info("Go to Swagger API, here is the link: https://192.168.32.84/securetrack/apidoc/ and find between all the APIs something that will be relevant")
+            return "Go to Swagger API, here is the link: https://192.168.32.84/securetrack/apidoc/ and find between all the APIs something that will be relevant"
+        if prompt.lower().startswith("what do we do now?"):
+            logger.info("Ask me any API question and I will solve all your problems!")
+            return "Ask me any API question and I will solve all your problems!"
+        if prompt.lower().startswith("hi, how are you"):
+            logger.info("Hello, im here to assist you with APIs how can I help?")
+            return "hello, im here to assist you with APIs how can i help?"
+        if prompt.lower().startswith("whats the weather"):
+            logger.info("Im not qualified to answer this question, you can teach me the API for weather")
+            return "Im not qualified to answer this question, you can teach me the API for weather"
+        if prompt.lower().startswith("what else cam you do"):
+            logger.info("I can show the world, the tos API world")
+            return "I can show the world, the tos API world"
+        full_query = f"Previous conversations: {context} User question: {prompt}"
         logger.info(f"Query: {full_query}")
 
-        # Send the full query with context to the model
         answer = rest_gpt.run(full_query)
         logger.info(f"Answer: {answer}")
-        logger.info(f"Execution Time: {time.time() - start_time}")
+        logger.info(f"Execution Time: {time.time() - time.time()}")
 
-        # Append the latest interaction to the history
-        history.extend([prompt, answer])
+        return answer
+    except Exception as e:
+        logger.error(f"An error occurred: {e}")
+        return "Encountered an error, can you ask the question again? Try to be specific."
+
+def main():
+    initialize_logging()
+    config = load_configuration()
+    api_spec = initialize_api_scenario()
+    rest_gpt = setup_scenario(api_spec)
+
+    history = []
+    while True:
         prompt = input("Please input an instruction (Press ENTER to use the example instruction): ")
-        if prompt == '':
-            prompt = query_example
-
-def run_chaty(prompt, context):
-    config = yaml.load(open('config.yaml', 'r'), Loader=yaml.FullLoader)
-    os.environ["OPENAI_API_KEY"] = config['openai_api_key']
-    os.environ['TUFIN_BASIC_AUTH'] = config['tufin_basic_auth']
-
-    logging.basicConfig(
-        format="%(message)s",
-        handlers=[logging.StreamHandler(ColorPrint())],
-    )
-    logger.setLevel(logging.INFO)
-
-    # scenario = input("Please select a scenario (TMDB/Spotify): ")
-    # scenario = scenario.lower()
-    scenario = 'tufin'
-
-    with open("specs/tufin_oas.json") as f:
-        raw_api_spec = json.load(f)
-
-    api_spec = reduce_openapi_spec(raw_api_spec, only_required=False, merge_allof=True)
-
-    tufin_basic_auth = os.environ["TUFIN_BASIC_AUTH"]
-    headers = {
-        'Authorization': f'Basic {tufin_basic_auth}'
-    }
-
-    requests_wrapper = Requests(headers=headers)
-
-    llm = OpenAI(model_name="gpt-3.5-turbo-0125", temperature=0.0, max_tokens=700)
-    # while True:
-    rest_gpt = RestGPT(llm, api_spec=api_spec, scenario=scenario, requests_wrapper=requests_wrapper,
-                       simple_parser=False)
-    start_time = time.time()
-
-    # Gather the complete conversation history as context for the new query
-    # context = " ".join(history[-10:])  # Using the last 10 interactions for context
-    # prompt = input("Please input an instruction (Press ENTER to use the example instruction): ")
-    # if prompt == '':
-    #     prompt = query_example
-    #
-    # # Concatenate context with the new query
-    if context:
-        full_query = f"Previous conversions {context} User question: {prompt}"
-    else:
-        full_query = prompt
-
-    logger.info(f"Query: {full_query}")
-
-    # Send the full query with context to the model
-    answer = rest_gpt.run(full_query)
-    logger.info(f"Answer: {answer}")
-    logger.info(f"Execution Time: {time.time() - start_time}")
-
-    # Append the latest interaction to the history
-    # history.extend([prompt, answer])
-    return answer
-
+        context = " ".join(history[-10:])  # Using the last 10 interactions for context
+        answer = run_chaty(prompt, context, rest_gpt)
+        history.extend([prompt, answer])
+        if answer:
+            logger.info(f"Answer: {answer}")
 
 if __name__ == '__main__':
     main()

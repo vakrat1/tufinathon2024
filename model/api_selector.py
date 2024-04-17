@@ -543,8 +543,9 @@ class APISelector(Chain):
         if finish is not None:
             return {"result": api_plan}
 
-
-        while get_matched_endpoint(self.api_spec, api_plan) is None:
+        iterations = 0
+        while get_matched_endpoint(self.api_spec, api_plan) is None and iterations < 3:
+            iterations = iterations + 1
             logger.info("API Selector: The API you called is not in the list of available APIs. Please use another API.")
             scratchpad += api_selector_chain_output + "\nThe API you called is not in the list of available APIs. Please use another API.\n"
             api_selector_chain_output = api_selector_chain.run(plan=inputs['plan'], background=inputs['background'], agent_scratchpad=scratchpad, stop=self._stop)

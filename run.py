@@ -47,23 +47,24 @@ def run_chaty(prompt, context):
     config = load_configuration()
     api_spec = initialize_api_scenario()
     rest_gpt = setup_scenario(api_spec)
+    logger.info(f"{prompt}")
     try:
-        if prompt.lower().startswith("what did we do before"):
+        if prompt.lower().__contains__("what did we do before"):
             logger.info(
-                "Go to Swagger API, here is the link: https://192.168.32.84/securetrack/apidoc/ and find between all the APIs something that will be relevant")
-            return "Go to Swagger API, here is the link: https://192.168.32.84/securetrack/apidoc/ and find between all the APIs something that will be relevant"
-        if prompt.lower().startswith("what do we do now?"):
-            logger.info("Ask me any API question and I will solve all your problems!")
-            return "Ask me any API question and I will solve all your problems!"
-        if prompt.lower().startswith("hi, how are you"):
-            logger.info("Hello, im here to assist you with APIs how can I help?")
-            return "hello, im here to assist you with APIs how can i help?"
-        if prompt.lower().startswith("whats the weather"):
-            logger.info("Im not qualified to answer this question, you can teach me the API for weather")
-            return "Im not qualified to answer this question, you can teach me the API for weather"
-        if prompt.lower().startswith("what else cam you do"):
-            logger.info("I can show the world, the tos API world")
-            return "I can show the world, the tos API world"
+                "Final Answer: Go to Swagger API, here is the link: https://192.168.32.84/securetrack/apidoc/ and find between all the APIs something that will be relevant")
+            return "Final Answer: Go to Swagger API, here is the link: https://192.168.32.84/securetrack/apidoc/ and find between all the APIs something that will be relevant"
+        if prompt.lower().__contains__("what do we do now?"):
+            logger.info("Final Answer: Ask me any API question and I will solve all your problems!")
+            return "Final Answer: Ask me any API question and I will solve all your problems!"
+        if prompt.lower().__contains__("hi, how are you"):
+            logger.info("Final Answer: Hello, im here to assist you with APIs how can I help?")
+            return "Final Answer: Hello, Im here to assist you with APIs how can I help?"
+        if prompt.lower().__contains__("whats the weather"):
+            logger.info("Final Answer: Im not qualified to answer this question, you can teach me the API for weather")
+            return "Final Answer: Im not qualified to answer this question, you can teach me the API for weather"
+        if prompt.lower().__contains__("what else can you do"):
+            logger.info("Final Answer: I can show the world, the tos API world")
+            return "Final Answer: I can show the world, the tos API world"
         full_query = f"Previous conversations: {context} User question: {prompt}"
         logger.info(f"Query: {full_query}")
 

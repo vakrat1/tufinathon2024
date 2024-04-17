@@ -22,7 +22,7 @@ def chaty():
         final_answer = answer.split(answer_marker, 1)[1].strip()
     else:
         # If 'Final Answer:' is not found, set a default message
-        final_answer = "Could not answer"
+        final_answer = answer
 
     # Create a JSON object with the final answer
     answer_json = {"answer": final_answer}
